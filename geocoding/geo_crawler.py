@@ -14,6 +14,8 @@ from geopy.geocoders import Nominatim
 
 from geocoding import google_keys
 from geocoding import osm_keys
+from pprint import pprint
+import zipcodes
 
 
 
@@ -80,8 +82,30 @@ class OSMGeoCrawler(GeoCrawler):
         :param str_address:  The string expression of address. Most accurate when OSM Geocrawler is initialized with region_search set to "city_name, state_name"
         :return: Tuple of (lat, long) in floating points
         """
+        zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
+        try:
+            zip_code_str = zip_code.groups()[0]  # Take only the first part that is responsible for city name
+            print(f"*** zip_code_str:{zip_code_str}")
+        except:
+            zip_code_str = None
+
+        if zip_code_str is not None:
+            try:
+                CITY = zipcodes.matching(zip_code_str)[0]["city"]
+                City = CITY[:1] + CITY[1:].lower()
+                str_address = str_address.replace(zip_code_str, City)
+                print(str_address)
+
+            except:
+                print("Cannot replace zipcode with city name.")
+
+
+
         location = self.locator.geocode(str_address)
         # print("Latitude = {}, Longitude = {}".format(location.latitude, location.longitude))
+
+
+
         if location is not None:
             return (location.latitude, location.longitude)
         else:
@@ -112,3 +136,13 @@ if __name__ == '__main__':
     lat_long = ogc.addr_to_latlong("24 Everett St, Cambridge")
     print(lat_long)
     print(ogc.latlong_to_addr(lat_long[0], lat_long[1]))
+
+    ogc2 = OSMGeoCrawler("MA")
+    lat_long2 = ogc2.addr_to_latlong("24 oxford st, 02138")
+    print(lat_long2)
+    print(ogc2.latlong_to_addr(lat_long2[0], lat_long2[1]))
+
+    ogc3 = OSMGeoCrawler()
+    lat_long3 = ogc3.addr_to_latlong("21 Burlington Ave, 02215")
+    print(lat_long3)
+    print(ogc3.latlong_to_addr(lat_long3[0], lat_long3[1]))
