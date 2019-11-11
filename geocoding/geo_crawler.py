@@ -82,9 +82,17 @@ class OSMGeoCrawler(GeoCrawler):
         :param str_address:  The string expression of address. Most accurate when OSM Geocrawler is initialized with region_search set to "city_name, state_name"
         :return: Tuple of (lat, long) in floating points
         """
-        zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
+        # zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
+        # zip_code = re.search(r"(.*\d{5}-\d{4}\b|.*\d{5})", str_address)
+
+        regex = re.compile(r"[0-9]{5}(?:-[0-9]{4})?")
+
+        matches = re.findall(regex, str_address)
+        # print(matches)
         try:
-            zip_code_str = zip_code.groups()[0]  # Take only the first part that is responsible for city name
+            assert len(matches) == 1
+            zip_code_str = matches[0]
+            # zip_code_str = zip_code.groups()[0]
             print(f"*** zip_code_str:{zip_code_str}")
         except:
             zip_code_str = None
@@ -97,7 +105,7 @@ class OSMGeoCrawler(GeoCrawler):
                 print(str_address)
 
             except:
-                print("Cannot replace zipcode with city name.")
+                print("No zipcode and/or cannot replace zipcode with city name.")
 
 
 
@@ -146,3 +154,8 @@ if __name__ == '__main__':
     lat_long3 = ogc3.addr_to_latlong("21 Burlington Ave, 02215")
     print(lat_long3)
     print(ogc3.latlong_to_addr(lat_long3[0], lat_long3[1]))
+
+    ogc4 = OSMGeoCrawler()
+    lat_long4 = ogc4.addr_to_latlong("78 Kirkland St, MA 02138-2033")
+    print(lat_long4)
+    print(ogc4.latlong_to_addr(lat_long4[0], lat_long4[1]))
