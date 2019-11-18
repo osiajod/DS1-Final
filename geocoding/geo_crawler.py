@@ -16,6 +16,7 @@ from geocoding import google_keys
 from geocoding import osm_keys
 from pprint import pprint
 import zipcodes
+from geopy.exc import GeocoderTimedOut
 
 
 
@@ -72,9 +73,9 @@ class OSMGeoCrawler(GeoCrawler):
         super().__init__()
         self.region_search = "%s, "+set_to_region
         if len(self.region_search) != 3:
-            self.locator = Nominatim(user_agent="DS1Geocoder", format_string=self.region_search)
+            self.locator = Nominatim(user_agent="DS1Geocoder", format_string=self.region_search, timeout=3)
         else:
-            self.locator = Nominatim(user_agent="DS1Geocoder")
+            self.locator = Nominatim(user_agent="DS1Geocoder", timeout=3)
 
     def addr_to_latlong(self, str_address):
         """
@@ -108,9 +109,12 @@ class OSMGeoCrawler(GeoCrawler):
                 print("No zipcode and/or cannot replace zipcode with city name.")
 
 
-
-        location = self.locator.geocode(str_address)
+        try:
+            location = self.locator.geocode(str_address)
         # print("Latitude = {}, Longitude = {}".format(location.latitude, location.longitude))
+        except GeocoderTimedOut:
+            time.sleep(0.5)
+            return self.addr_to_latlong(str_address)
 
 
 
@@ -130,7 +134,12 @@ class OSMGeoCrawler(GeoCrawler):
                   2. latitude floating point
                   3. longitude floating point
         """
-        nearest_location =self.locator.reverse(str(lat)+", "+str(long))
+        try:
+            nearest_location =self.locator.reverse(str(lat)+", "+str(long))
+        except GeocoderTimedOut:
+            time.sleep(0.5)
+            return self.latlong_to_addr(lat,long)
+
         print(nearest_location.raw)
         if nearest_location is not None:
             return nearest_location.address, nearest_location.latitude, nearest_location.longitude
