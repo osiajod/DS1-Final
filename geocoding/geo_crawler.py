@@ -4,7 +4,6 @@ from urllib.parse import urlencode, quote_plus, quote
 import json
 import time
 import re
-import os
 # import requests.exceptions
 import random
 # import requests
