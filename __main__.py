@@ -42,33 +42,38 @@ def convert_df_Addr(df, output_filename, time_quota=False):
 def partition_df(df, output_filename, num_per_part = 200, time_quota=False):
     df_list = []
     output_filename = output_filename.replace(".csv", "")
+    index = []
     for i in range(int(math.ceil((len(df)/200)))):
         if os.path.exists(output_filename + str(i) + ".csv"):
+            print(output_filename + str(i) + ".csv", " exists!")
             continue
         df_list.append(df[i*num_per_part:min(i*num_per_part+num_per_part,len(df)-1)])
+        index.append(i)
 
-    for index, df in enumerate(df_list):
-        convert_df_Addr(df, output_filename + str(index) + ".csv", time_quota)
-
-
-
+    for indice, df in zip(index, df_list):
+        convert_df_Addr(df, output_filename + str(indice) + ".csv", time_quota)
 
 
-# df_17_bldg = pd.read_csv('./clean_data/2017_building_value.csv')
-# partition_df(df_17_bldg, './clean_data/2017_building_lat_long.csv')
+
+
+
+
+
+df_17_bldg = pd.read_csv('./clean_data/2017_building_value.csv')
+partition_df(df_17_bldg, './clean_data/2017_building_lat_long.csv')
 
 
 # df_17_land = pd.read_csv('./clean_data/2017_land_value.csv')
 # partition_df(df_17_bldg, './clean_data/2017_land_lat_long.csv')
 
-df_18_bldg = pd.read_csv('./clean_data/2018_building_value.csv')
-partition_df(df_18_bldg, './clean_data/2018_building_lat_long.csv', True)
+# df_18_bldg = pd.read_csv('./clean_data/2018_building_value.csv')
+# partition_df(df_18_bldg, './clean_data/2018_building_lat_long.csv', True)
 
 # df_18_land = pd.read_csv('./clean_data/2018_land_value.csv')
 # partition_df(df_18_land, './clean_data/2018_land_lat_long.csv')
 
-df_19_bldg = pd.read_csv('./clean_data/2019_building_value.csv')
-partition_df(df_19_bldg, './clean_data/2019_building_lat_long.csv', True)
+# df_19_bldg = pd.read_csv('./clean_data/2019_building_value.csv')
+# partition_df(df_19_bldg, './clean_data/2019_building_lat_long.csv', True)
 
 # df_19_land = pd.read_csv('./clean_data/2019_land_value.csv')
 # partition_df(df_19_land, './clean_data/2019_land_lat_long.csv')
