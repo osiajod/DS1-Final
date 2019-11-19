@@ -39,7 +39,7 @@ def convert_df_Addr(df, output_filename):
     #         csv_out.writerow(row)
 
 
-def partition_df(df, output_filename, num_per_part = 200):
+def partition_df(df, output_filename, num_per_part = 200, time_quota=False):
     df_list = []
     output_filename = output_filename.replace(".csv", "")
     for i in range(int(math.ceil((len(df)/200)))):
@@ -54,15 +54,15 @@ def partition_df(df, output_filename, num_per_part = 200):
 
 
 
-df_17_bldg = pd.read_csv('./clean_data/2017_building_value.csv')
-partition_df(df_17_bldg, './clean_data/2017_building_lat_long.csv')
+# df_17_bldg = pd.read_csv('./clean_data/2017_building_value.csv')
+# partition_df(df_17_bldg, './clean_data/2017_building_lat_long.csv')
 
 
-df_17_land = pd.read_csv('./clean_data/2017_land_value.csv')
-partition_df(df_17_bldg, './clean_data/2017_land_lat_long.csv')
+# df_17_land = pd.read_csv('./clean_data/2017_land_value.csv')
+# partition_df(df_17_bldg, './clean_data/2017_land_lat_long.csv')
 
-df_18_bldg = pd.read_csv('./clean_data/2018_building_value.csv')
-partition_df(df_18_bldg, './clean_data/2018_building_lat_long.csv')
+# df_18_bldg = pd.read_csv('./clean_data/2018_building_value.csv')
+# partition_df(df_18_bldg, './clean_data/2018_building_lat_long.csv')
 
 df_18_land = pd.read_csv('./clean_data/2018_land_value.csv')
 partition_df(df_18_land, './clean_data/2018_land_lat_long.csv')
