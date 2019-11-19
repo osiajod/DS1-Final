@@ -6,7 +6,7 @@ import time
 import re
 # import requests.exceptions
 import random
-# import requests
+import requests
 import geopandas
 import geopy
 from geopy.geocoders import Nominatim
@@ -155,24 +155,24 @@ class OSMGeoCrawler(GeoCrawler):
             return None
 
 if __name__ == '__main__':
-    # ggc = GoogleGeoCrawler()
-    # print(ggc.addr_to_longlat("Harvard Square"))
-    ogc = OSMGeoCrawler()
-    lat_long = ogc.addr_to_latlong("24 Everett St, Cambridge")
-    print(lat_long)
-    print(ogc.latlong_to_addr(lat_long[0], lat_long[1]))
-
-    ogc2 = OSMGeoCrawler("MA")
-    lat_long2 = ogc2.addr_to_latlong("24 oxford st, 02138")
-    print(lat_long2)
-    print(ogc2.latlong_to_addr(lat_long2[0], lat_long2[1]))
-
-    ogc3 = OSMGeoCrawler()
-    lat_long3 = ogc3.addr_to_latlong("21 Burlington Ave, 02215")
-    print(lat_long3)
-    print(ogc3.latlong_to_addr(lat_long3[0], lat_long3[1]))
-
-    ogc4 = OSMGeoCrawler()
-    lat_long4 = ogc4.addr_to_latlong("78 Kirkland St, MA 02138-2033")
-    print(lat_long4)
-    print(ogc4.latlong_to_addr(lat_long4[0], lat_long4[1]))
+    ggc = GoogleGeoCrawler()
+    print(ggc.addr_to_latlong("Harvard Square"))
+    # ogc = OSMGeoCrawler()
+    # lat_long = ogc.addr_to_latlong("24 Everett St, Cambridge")
+    # print(lat_long)
+    # print(ogc.latlong_to_addr(lat_long[0], lat_long[1]))
+    #
+    # ogc2 = OSMGeoCrawler("MA")
+    # lat_long2 = ogc2.addr_to_latlong("24 oxford st, 02138")
+    # print(lat_long2)
+    # print(ogc2.latlong_to_addr(lat_long2[0], lat_long2[1]))
+    #
+    # ogc3 = OSMGeoCrawler()
+    # lat_long3 = ogc3.addr_to_latlong("21 Burlington Ave, 02215")
+    # print(lat_long3)
+    # print(ogc3.latlong_to_addr(lat_long3[0], lat_long3[1]))
+    #
+    # ogc4 = OSMGeoCrawler()
+    # lat_long4 = ogc4.addr_to_latlong("78 Kirkland St, MA 02138-2033")
+    # print(lat_long4)
+    # print(ogc4.latlong_to_addr(lat_long4[0], lat_long4[1]))
