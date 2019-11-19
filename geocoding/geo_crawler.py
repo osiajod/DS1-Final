@@ -16,6 +16,7 @@ from geocoding import osm_keys
 from pprint import pprint
 import zipcodes
 from geopy.exc import GeocoderTimedOut
+from geopy.extra.rate_limiter import RateLimiter
 
 
 
@@ -76,7 +77,7 @@ class OSMGeoCrawler(GeoCrawler):
         else:
             self.locator = Nominatim(user_agent="DS1Geocoder", timeout=3)
 
-    def addr_to_latlong(self, str_address):
+    def addr_to_latlong(self, str_address, add_delay=False):
         """
 
         :param str_address:  The string expression of address. Most accurate when OSM Geocrawler is initialized with region_search set to "city_name, state_name"
@@ -84,7 +85,8 @@ class OSMGeoCrawler(GeoCrawler):
         """
         # zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
         # zip_code = re.search(r"(.*\d{5}-\d{4}\b|.*\d{5})", str_address)
-
+        if add_delay:
+            gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
         regex = re.compile(r"[0-9]{5}(?:-[0-9]{4})?")
 
         matches = re.findall(regex, str_address)
@@ -112,7 +114,7 @@ class OSMGeoCrawler(GeoCrawler):
             location = self.locator.geocode(str_address)
         # print("Latitude = {}, Longitude = {}".format(location.latitude, location.longitude))
         except GeocoderTimedOut:
-            time.sleep(0.5)
+            time.sleep(2)
             return self.addr_to_latlong(str_address)
 
 
@@ -122,7 +124,10 @@ class OSMGeoCrawler(GeoCrawler):
         else:
             return None
 
-    def latlong_to_addr(self, lat, long):
+
+
+
+    def latlong_to_addr(self, lat, long, add_delay=False):
         """
 
         :param lat: floating point latitude
@@ -133,10 +138,14 @@ class OSMGeoCrawler(GeoCrawler):
                   2. latitude floating point
                   3. longitude floating point
         """
+
+        if add_delay:
+            gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
+
         try:
             nearest_location =self.locator.reverse(str(lat)+", "+str(long))
         except GeocoderTimedOut:
-            time.sleep(0.5)
+            time.sleep(1)
             return self.latlong_to_addr(lat,long)
 
         print(nearest_location.raw)
