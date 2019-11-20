@@ -62,6 +62,10 @@ light_zip = pd.DataFrame(light_zip_new, columns=["zipcode"])
 # light_zip = pd.DataFrame(light[["Lat","Long"]].apply(to_zipcode, axis=1), columns=["zipcode"])
 light_with_zip = pd.concat([light, light_zip], axis=1)
 light_with_zip.to_csv("light_with_zip.csv", index=False)
+light_with_zip2 = light_with_zip.groupby(["zipcode"], as_index= False).count()
+light_with_zip2.to_csv("light_count_with_zip.csv", index=False)
+
+
 
 print("exporting light finished")
 
@@ -70,7 +74,7 @@ crime_with_zip_joined = crime_with_zip.join(boston.set_index('zipcode'), on='zip
 crime_with_zip_joined = crime_with_zip_joined.join(bldg.set_index('zipcode'), on='zipcode')
 crime_with_zip_joined = crime_with_zip_joined.join(land.set_index('zipcode'), on='zipcode')
 
-crime_with_light = crime_with_zip_joined.join(light_with_zip.set_index('zipcode'), on='zipcode')
+crime_with_light = crime_with_zip_joined.join(light_with_zip2.set_index('zipcode'), on='zipcode')
 
 crime_with_zip_joined.to_csv("crime_joined.csv", index=False)
 crime_with_light.to_csv("crime_all_joined.csv", index=False)
