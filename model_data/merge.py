@@ -29,6 +29,13 @@ bldg.rename(columns = {'ZIPCODE' : 'zipcode'}, inplace = True)
 land = pd.read_csv('./land_zip.csv')
 land.rename(columns = {'ZIPCODE' : 'zipcode'}, inplace = True)
 
+light = pd.read_csv('./streetlight_locations.csv')
+light_zip = pd.DataFrame(light[["Lat","Long"]].apply(to_zipcode, axis=1), columns=["zipcode"])
+light_with_zip = pd.concat([light, light_zip], axis=1)
+light_with_zip.to_csv("light_with_zip.csv", index=False)
+
 crime_with_zip_joined = crime_with_zip.join(boston.set_index('zipcode'), on='zipcode')
 crime_with_zip_joined = crime_with_zip_joined.join(bldg.set_index('zipcode'), on='zipcode')
 crime_with_zip_joined = crime_with_zip_joined.join(land.set_index('zipcode'), on='zipcode')
+
+crime_with_zip_joined.to_csv("crime_joined.csv", index=False)
