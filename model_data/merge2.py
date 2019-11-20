@@ -13,10 +13,15 @@ def to_zipcode(lat_long_series):
     return search.by_coordinates(lat,long,radius=30)[0].values()[0]
 
 def to_zipcode(lat, long):
-    return search.by_coordinates(lat,long,radius=30)[0].values()[0]
+    result = search.by_coordinates(lat,long,radius=30)[0].values()[0]
+    print(result)
+    return result
 
 # crime_zip = pd.DataFrame(crime[["Lat","Long"]].apply(to_zipcode, axis=1), columns=["zipcode"])
+#UNCOMMENT BELOW FOR REAL
+# crime_zip = pd.DataFrame(crime[["Lat", "Long"]]).values
 crime_zip = pd.DataFrame(crime[["Lat", "Long"]]).values
+
 crime_zip_new = []
 
 for lat, long in crime_zip:
