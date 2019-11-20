@@ -29,4 +29,6 @@ bldg.rename(columns = {'ZIPCODE' : 'zipcode'}, inplace = True)
 land = pd.read_csv('./land_zip.csv')
 land.rename(columns = {'ZIPCODE' : 'zipcode'}, inplace = True)
 
-crime_with_zip_joined = crime_with_zip.join([boston.set_index('zipcode'), bldg.set_index('zipcode'), land.set_index('zipcode')], on='zipcode')
+crime_with_zip_joined = crime_with_zip.join(boston.set_index('zipcode'), on='zipcode')
+crime_with_zip_joined = crime_with_zip_joined.join(bldg.set_index('zipcode'), on='zipcode')
+crime_with_zip_joined = crime_with_zip_joined.join(land.set_index('zipcode'), on='zipcode')
