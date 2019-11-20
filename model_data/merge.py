@@ -8,11 +8,19 @@ search = SearchEngine(simple_zipcode=True)
 # light = pd.read_csv("./")
 
 def to_zipcode(lat_long_series):
+    print(lat_long_series)
     lat = lat_long_series[0]
     long = lat_long_series[1]
     return search.by_coordinates(lat,long,radius=30)[0].values()[0]
 
-crime_zip = pd.DataFrame(crime[["Lat","Long"]].apply(to_zipcode, axis=1), columns=["zipcode"])
+# crime_zip = pd.DataFrame(crime[["Lat","Long"]].apply(to_zipcode, axis=1), columns=["zipcode"])
+
+
+
+
+
+crime_zip = pd.DataFrame(crime[["Lat", "Long"]]).values
+
 
 crime_zip.head()
 
