@@ -28,11 +28,11 @@ boston.rename(columns = {'Zipcode':'zipcode'}, inplace = True)
 
 
 bldg = pd.read_csv('./bldg_zip.csv')
-bldg['Zipcode']='0'+bldg['Zipcode'].astype(str)
+bldg['ZIPCODE']='0'+bldg['ZIPCODE'].astype(str)
 bldg.rename(columns = {'ZIPCODE' : 'zipcode'}, inplace = True)
 
 land = pd.read_csv('./land_zip.csv')
-land['Zipcode']='0'+land['Zipcode'].astype(str)
+land['ZIPCODE']='0'+land['ZIPCODE'].astype(str)
 land.rename(columns = {'ZIPCODE' : 'zipcode'}, inplace = True)
 
 light = pd.read_csv('./streetlight_locations.csv')
