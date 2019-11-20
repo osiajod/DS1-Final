@@ -7,6 +7,10 @@ crime = pd.read_csv("./preposses_crimeda.csv")
 search = SearchEngine(simple_zipcode=True)
 # light = pd.read_csv("./")
 
+top6 = list(crime.groupby(["OFFENSE_CODE_GROUP"]).count()["Unnamed: 0"].sort_values(ascending=False).head(6).index)
+
+crime = crime[crime["OFFENSE_CODE_GROUP"].isin(top6)]
+
 def to_zipcode(lat_long_series):
     lat = lat_long_series[0]
     long = lat_long_series[1]
