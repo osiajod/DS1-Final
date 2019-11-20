@@ -59,7 +59,7 @@ def process_crimedata(df):
     return df
 
 
-def feature_overview(df, feature_name, save = False):
+def feature_overview(df, feature_name,save = False):
     if feature_name == 'year':
         g= sns.catplot(x="YEAR", kind="count", palette="Blues",height = 5, aspect=7/5, data=df)
         axes = g.axes.flatten()
@@ -108,13 +108,70 @@ def feature_overview(df, feature_name, save = False):
     if feature_name =='crime_type_top10':
         plt.figure(figsize = (10,6))
         sns.countplot(y = df["OFFENSE_CODE_GROUP"],order=df["OFFENSE_CODE_GROUP"].value_counts()[:10].index)
-        plt.suptitle("Most frequent crimes on Christmas", fontsize=15, fontweight=0, color='black', style='italic')
+        plt.suptitle("Most frequent crimes in 2015-2019", fontsize=15, fontweight=0, color='black', style='italic')
         plt.ylabel("Crime Type", fontsize=14)
         plt.xlabel("Total Crimes", fontsize=14)
         plt.tick_params(labelsize=12)
 
         if save:
             plt.savefig('EDA/crime_type_top10.jpg')
+
+def  crime_type_scan(df, feature_name,  crime_type, save = False):
+    """
+    overview how the frequency of some crime  type changes  
+    among  different features
+    """
+
+    if feature_name == 'year':
+        g= sns.catplot(x="YEAR", kind="count", palette="Blues",height = 5, aspect=7/5, data=df[df.OFFENSE_CODE_GROUP  == crime_type])
+        axes = g.axes.flatten()
+        axes[0].set_title('count of type '+ crime_type)
+        if save:
+            g.savefig('EDA/year.jpg')
+    if feature_name == 'month':
+        
+        g = sns.catplot(x="MONTH", hue="YEAR", kind="count", \
+        palette="Paired",height = 5, aspect=7/5, data=df[df.OFFENSE_CODE_GROUP  == crime_type])
+        axes = g.axes.flatten()
+        axes[0].set_title('crime count by month')
+        if save:
+            g.savefig('EDA/month.jpg')
+
+    if feature_name == 'day_of_week':
+        day_order = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday" ]
+        plt.figure(figsize = (10,6))
+        g = sns.countplot("DAY_OF_WEEK", data=df[df.OFFENSE_CODE_GROUP  == crime_type],order=day_order)
+        plt.title('crime count by the day of week')
+        if save:
+            plt.savefig('EDA/weekday.jpg')
+
+    if feature_name =='hour':
+        plt.figure(figsize = (10,6))
+        g = sns.countplot("HOUR",data=df[df.OFFENSE_CODE_GROUP  == crime_type])
+        plt.title('crime count by hour')
+        if save:
+            plt.savefig('EDA/weekday.jpg')
+     
+
+def top5_overview(df, feature_name, save = False):
+
+    #get the data from top5  crime types
+    top5 = df["OFFENSE_CODE_GROUP"].value_counts()[:5].index
+    data = df[df.OFFENSE_CODE_GROUP.isin(top5)]
+    data.index =  range(len(data))
+
+
+    df2 = data.groupby([feature_name,'OFFENSE_CODE_GROUP'])[feature_name].\
+    count().unstack('OFFENSE_CODE_GROUP')
+    ax = df2.plot(kind='bar', stacked=True,figsize=(10,6),title = 'Top5 crime type by '+feature_name)
+    ax.set_ylabel("count")
+
+    if save:
+       fig = ax.get_figure()
+       fig.savefig('EAD/top5_'+feature_name)
+
+
+
 
     
 def geomap(df, year):
