@@ -14,12 +14,14 @@ from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
+from sklearn.metrics import confusion_matrix
 from sklearn import metrics
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import multilabel_confusion_matrix
-from sklearn.metrics import confusion_matrix
+
+import pickle
 
 import statsmodels.api as sm
 from statsmodels.api import OLS
@@ -42,9 +44,9 @@ df['SHOOTING'] = le.fit_transform(df['SHOOTING'])
 df['DAY_OF_WEEK'] = le.fit_transform(df['DAY_OF_WEEK'])
 df['OFFENSE_CODE_GROUP'] = le.fit_transform(df['OFFENSE_CODE_GROUP'])
 
-df_cat = enc.fit_transform(df[["MONTHS", "SHOOTING", "DAY_OF_WEEK"]]).toarray()
+df_cat = enc.fit_transform(df[["MONTH", "SHOOTING", "DAY_OF_WEEK"]]).toarray()
 
-df_cat = pd.DataFrame(df_cat, columns=enc.get_feature_names(['MONTHS', 'SHOOTING', 'DAY_OF_WEEK']))
+df_cat = pd.DataFrame(df_cat, columns=enc.get_feature_names(['MONTH', 'SHOOTING', 'DAY_OF_WEEK']))
 df = pd.concat([df, df_cat], axis=1)
 df = df.dropna()
 
@@ -88,3 +90,7 @@ accuracy = knn.score(X_normalized_tst, y_test)
 cm = confusion_matrix(y_test, y_pred)
 
 print(cm)
+
+
+pickle.dump(logreg, open('logreg', 'wb'))
+pickle.dump(knn, open('knn', 'wb'))
