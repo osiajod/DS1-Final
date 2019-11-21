@@ -168,7 +168,7 @@ def top5_overview(df, feature_name, save = False):
 
     if save:
        fig = ax.get_figure()
-       fig.savefig('EAD/top5_'+feature_name)
+       fig.savefig('EDA/top5_'+feature_name)
 
 
 
