@@ -58,7 +58,7 @@ X_train, X_test, y_train, y_test = train_test_split(df.loc[:, df.columns != 'OFF
 y_train = np.array(y_train)
 y_test = np.array(y_test)
 
-display(X_train.head())
+# display(X_train.head())
 print(type(y_train))
 print(y_train)
 
@@ -71,8 +71,8 @@ min_max_scaler.fit(X_train)
 X_normalized_tst = pd.DataFrame(min_max_scaler.transform(X_test))
 X_normalized_tst.columns = X_test.columns
 
-display(X_normalized.head())
-display(X_normalized_tst.head())
+# display(X_normalized.head())
+# display(X_normalized_tst.head())
 
 # Let's first start with Logistic Model
 
