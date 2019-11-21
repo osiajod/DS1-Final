@@ -19,9 +19,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import multilabel_confusion_matrix
-
-% matplotlib
-inline
+from sklearn.metrics import confusion_matrix
 
 import statsmodels.api as sm
 from statsmodels.api import OLS
@@ -77,7 +75,7 @@ logreg = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multino
 logreg.fit(X_normalized, y_train)
 y_pred = logreg.predict(X_normalized_tst)
 
-mcm = multilabel_confusion_matrix(y_true, y_pred, sample_weight=None, labels=None, samplewise=False)
+mcm = multilabel_confusion_matrix(y_test, y_pred, sample_weight=None, labels=None, samplewise=False)
 logreg.score(X_normalized, y_test)
 
 knn = KNeighborsClassifier(n_neighbors=7).fit(X_normalized, y_train)
@@ -85,7 +83,7 @@ knn = KNeighborsClassifier(n_neighbors=7).fit(X_normalized, y_train)
 # accuracy on X_test
 accuracy = knn.score(X_normalized_tst, y_test)
 
-from sklearn.metrics import confusion_matrix
+
 
 cm = confusion_matrix(y_test, y_pred)
 
