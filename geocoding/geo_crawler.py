@@ -29,10 +29,10 @@ class GeoCrawler:
     def sendRequest(self):
         pass
 
-    def latlong_to_addr(self):
+    def latlong_to_addr(self, lat, long):
         pass
 
-    def addr_to_latlong(self):
+    def addr_to_latlong(self, addr):
         pass
 
     def parseResult(self):
@@ -47,22 +47,55 @@ class GoogleGeoCrawler(GeoCrawler):
         super().__init__()
         self.keys = google_keys
         self.address_url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+        self.latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
     def addr_to_latlong(self, addr):
         rotated_id_index = random.randrange(0, len(self.keys))
         rand_key = self.keys[rotated_id_index]
         addr_and_key = self.address_url + addr + "Ca&key=" + rand_key
+        count = 0  # plz don't remove this
         try:
             response = requests.get(addr_and_key)
             response_json = response.json()
-            return response_json
+            lat_long_dict = response_json["results"][0]["geometry"]["location"]
+            print(lat_long_dict)
+            return (lat_long_dict["lat"], lat_long_dict["lng"])
+
+            # return response_json
         except urllib.error.HTTPError as e:
             print("HTTPError has occured")
             time.sleep(1)
-            self.addr_to_longlat(addr)
+            count += 1
+            if count >= 50:  # Please don't change this
+                print("exiting due to too many requests")
+                exit(1)
+            self.addr_to_latlong(addr)
 
-    def latlong_to_addr(self):
-        pass
+    def latlong_to_addr(self, lat, long):
+        rotated_id_index = random.randrange(0, len(self.keys))
+        rand_key = self.keys[rotated_id_index]
+        # print(str(lat), str(long))
+        latlong_and_key = self.latlng_url + str(lat) + "," + str(long) + "&key=" + rand_key
+        # print(latlong_and_key)
+        count = 0 # plz don't remove this
+        try:
+            response = requests.get(latlong_and_key)
+            response_json = response.json()
+            # print("printing json: ", response_json)
+            # print(response_json.keys())
+            address = response_json["results"][0]["formatted_address"]
+            print(address)
+            return address
+
+            # return response_json
+        except urllib.error.HTTPError as e:
+            print("HTTPError has occured")
+            time.sleep(1)
+            count +=1
+            if count >= 50: # Please don't change this
+                print("exiting due to too many requests")
+                exit(1)
+            self.addr_to_latlong(lat, long)
 
 
 class OSMGeoCrawler(GeoCrawler):
@@ -156,7 +189,8 @@ class OSMGeoCrawler(GeoCrawler):
 
 if __name__ == '__main__':
     ggc = GoogleGeoCrawler()
-    print(ggc.addr_to_latlong("Harvard Square"))
+    print(ggc.addr_to_latlong("Perkins hall, Harvard"))
+    print(ggc.latlong_to_addr(42.3792487, -71.1168629))
     # ogc = OSMGeoCrawler()
     # lat_long = ogc.addr_to_latlong("24 Everett St, Cambridge")
     # print(lat_long)
