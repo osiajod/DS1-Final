@@ -71,11 +71,11 @@ class GoogleGeoCrawler(GeoCrawler):
                 exit(1)
             self.addr_to_latlong(addr)
 
-    def latlong_to_addr(self, lat, long):
+    def latlong_to_addr(self, lat, lng):
         rotated_id_index = random.randrange(0, len(self.keys))
         rand_key = self.keys[rotated_id_index]
         # print(str(lat), str(long))
-        latlong_and_key = self.latlng_url + str(lat) + "," + str(long) + "&key=" + rand_key
+        latlong_and_key = self.latlng_url + str(lat) + "," + str(lng) + "&key=" + rand_key
         # print(latlong_and_key)
         count = 0 # plz don't remove this
         try:
@@ -95,7 +95,7 @@ class GoogleGeoCrawler(GeoCrawler):
             if count >= 50: # Please don't change this
                 print("exiting due to too many requests")
                 exit(1)
-            self.addr_to_latlong(lat, long)
+            self.addr_to_latlong(lat, lng)
 
 
 class OSMGeoCrawler(GeoCrawler):
