@@ -17,6 +17,7 @@ from pprint import pprint
 import zipcodes
 from geopy.exc import GeocoderTimedOut
 from geopy.extra.rate_limiter import RateLimiter
+import math
 
 
 
@@ -50,6 +51,8 @@ class GoogleGeoCrawler(GeoCrawler):
         self.latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
     def addr_to_latlong(self, addr):
+        if addr is None or addr is "" or addr is math.isnan(addr):
+            return None
         rotated_id_index = random.randrange(0, len(self.keys))
         rand_key = self.keys[rotated_id_index]
         addr_and_key = self.address_url + addr + "Ca&key=" + rand_key
@@ -118,7 +121,7 @@ class OSMGeoCrawler(GeoCrawler):
         """
         # zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
         # zip_code = re.search(r"(.*\d{5}-\d{4}\b|.*\d{5})", str_address)
-        if str_address is None or str_address is "":
+        if str_address is None or str_address is "" or str_address is math.isnan(str_address):
             return None
         if add_delay:
             gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
@@ -173,7 +176,7 @@ class OSMGeoCrawler(GeoCrawler):
                   2. latitude floating point
                   3. longitude floating point
         """
-        if lat is None or long is None:
+        if lat is None or long is None or lat is math.isnan(lat) or long is math.isnan(long):
             return None
         if add_delay:
             gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
