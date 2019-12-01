@@ -51,7 +51,7 @@ class GoogleGeoCrawler(GeoCrawler):
         self.latlng_url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
     def addr_to_latlong(self, addr):
-        if addr is None or addr is "" or addr is math.isnan(addr):
+        if addr is None or addr is "":
             return None
         rotated_id_index = random.randrange(0, len(self.keys))
         rand_key = self.keys[rotated_id_index]
@@ -121,14 +121,16 @@ class OSMGeoCrawler(GeoCrawler):
         """
         # zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
         # zip_code = re.search(r"(.*\d{5}-\d{4}\b|.*\d{5})", str_address)
-        if str_address is None or str_address is "" or str_address is math.isnan(str_address):
-            return None
-        if add_delay:
-            gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
-        regex = re.compile(r"[0-9]{5}(?:-[0-9]{4})?")
+        try:
 
-        matches = re.findall(regex, str_address)
+            if add_delay:
+                gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
+            regex = re.compile(r"[0-9]{5}(?:-[0-9]{4})?")
+
+            matches = re.findall(regex, str_address)
         # print(matches)
+        except:
+            return None # This is when the str_address is NaN  or None
         try:
             assert len(matches) == 1
             zip_code_str = matches[0]
