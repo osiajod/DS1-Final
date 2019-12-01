@@ -118,6 +118,8 @@ class OSMGeoCrawler(GeoCrawler):
         """
         # zip_code = re.search(r'.*(\d{5}(\-\d{4})?)$', str_address)
         # zip_code = re.search(r"(.*\d{5}-\d{4}\b|.*\d{5})", str_address)
+        if str_address is None or str_address is "":
+            return None
         if add_delay:
             gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
         regex = re.compile(r"[0-9]{5}(?:-[0-9]{4})?")
@@ -171,7 +173,8 @@ class OSMGeoCrawler(GeoCrawler):
                   2. latitude floating point
                   3. longitude floating point
         """
-
+        if lat is None or long is None:
+            return None
         if add_delay:
             gc = RateLimiter(self.locator.geocode, min_delay_seconds=1, error_wait_seconds=10, swallow_exceptions=True, max_retries=5000)
 
