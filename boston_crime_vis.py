@@ -153,28 +153,34 @@ def  crime_type_scan(df, feature_name,  crime_type, save = False):
             plt.savefig('EDA/weekday.jpg')
      
 
-def top5_overview(df, feature_name, save = False):
+def crimes5_overview(df, feature_name, save = False):
 
     #get the data from top5  crime types
-    top5 = df["OFFENSE_CODE_GROUP"].value_counts()[:5].index
-    data = df[df.OFFENSE_CODE_GROUP.isin(top5)]
+    groups = ['Auto Theft',
+ 'Motor Vehicle Accident Response',
+ 'Larceny',
+ 'Robbery',
+ 'Residential Burglary']
+
+    crimes5 = df[df["OFFENSE_CODE_GROUP"].isin(groups)]["OFFENSE_CODE_GROUP"].value_counts().index
+    data = df[df.OFFENSE_CODE_GROUP.isin(crimes5)]
     data.index =  range(len(data))
 
 
     df2 = data.groupby([feature_name,'OFFENSE_CODE_GROUP'])[feature_name].\
     count().unstack('OFFENSE_CODE_GROUP')
-    ax = df2.plot(kind='bar', stacked=True,figsize=(10,6),title = 'Top5 crime type by '+feature_name)
+    ax = df2.plot(kind='bar', stacked=True,figsize=(10,6),title = '5 crimes '+feature_name)
     ax.set_ylabel("count")
 
     if save:
        fig = ax.get_figure()
-       fig.savefig('EDA/top5_'+feature_name)
+       fig.savefig('EDA/5crimes_'+feature_name)
 
 
 
 
     
-def geomap(df, year):
+def geomap(df, year, save = False):
 
     """
     show first 2000 data in df
@@ -184,13 +190,23 @@ def geomap(df, year):
     #incidents=folium.map.FeatureGroup()
     Lat=42.3
     Lon=-71.1
+    groups = ['Auto Theft',
+ 'Motor Vehicle Accident Response',
+ 'Larceny',
+ 'Robbery',
+ 'Residential Burglary']
 
-    data1=df[df['YEAR']==year][0:2000]
+    crimes5 = df[df["OFFENSE_CODE_GROUP"].isin(groups)]
+    
+
+    data1=crimes5[crimes5['YEAR']==year][0:2000]
     boston_map=folium.Map([Lat,Lon],zoom_start=12)
     incidents2=plugins.MarkerCluster().add_to(boston_map)
     for lat,lon,label in zip(data1.Lat,data1.Long,data1.OFFENSE_CODE_GROUP):
         folium.Marker(location=[lat,lon],icon=None,popup=label).add_to(incidents2)
     boston_map.add_child(incidents2)
+    if save:
+        boston_map.save("./EDA/"+str(year)+"boston_map.html") 
     display(boston_map)
     plt.show()
 
